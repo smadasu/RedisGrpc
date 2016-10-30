@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.ms;
+
+option java_multiple_files = true;
+
+message StringRequest {
+	string key = 1;
+}
+
+message StringResponse {
+	string value = 1;
+}
+
+service RedisServices {
+	rpc get (StringRequest) returns (StringResponse);
+}
