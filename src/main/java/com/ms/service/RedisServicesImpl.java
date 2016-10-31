@@ -3,8 +3,6 @@
  */
 package com.ms.service;
 
-import java.io.IOException;
-
 import com.ms.RedisServicesGrpc.RedisServicesImplBase;
 import com.ms.StringRequest;
 import com.ms.StringResponse;
@@ -25,13 +23,7 @@ public class RedisServicesImpl extends RedisServicesImplBase {
 
 	@Override
 	public void get(StringRequest request, StreamObserver<StringResponse> responseObserver) {
-		String value = "";
-		try {
-			value = redisSocketServices.get(request.getKey());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String value = redisSocketServices.get(request.getKey());
 		StringResponse reply = StringResponse.newBuilder().setValue(value).build();
 		responseObserver.onNext(reply);
 		responseObserver.onCompleted();

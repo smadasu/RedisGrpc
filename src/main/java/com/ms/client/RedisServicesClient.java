@@ -7,7 +7,7 @@ import com.ms.RedisServicesGrpc;
 import com.ms.StringRequest;
 
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.NettyChannelBuilder;
 
 public class RedisServicesClient {
 	private static final Logger logger = Logger.getLogger(RedisServicesClient.class.getName());
@@ -16,7 +16,7 @@ public class RedisServicesClient {
 	private final RedisServicesGrpc.RedisServicesBlockingStub blockingStub;
 
 	public RedisServicesClient(String host, int port) {
-		channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext(true).build();
+		channel = NettyChannelBuilder.forTarget(host + ":" + port).maxMessageSize(Integer.MAX_VALUE).usePlaintext(true).build();
 		blockingStub = RedisServicesGrpc.newBlockingStub(channel);
 	}
 
@@ -26,7 +26,11 @@ public class RedisServicesClient {
 	
 	private String getValue(String key) {
 		StringRequest request = StringRequest.newBuilder().setKey(key).build();
-		return blockingStub.get(request).getValue();
+		StringBuilder responseBuilder = new StringBuilder();
+		 blockingStub.get(request).forEachRemaining(response -> {
+			 responseBuilder.append(response.getValue());
+		});
+		 return responseBuilder.toString();
 	}
 
 	public static void main(String[] args) throws InterruptedException {

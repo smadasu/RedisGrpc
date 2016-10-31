@@ -13,5 +13,5 @@ message StringResponse {
 }
 
 service RedisServices {
-	rpc get (StringRequest) returns (StringResponse);
+	rpc get (StringRequest) returns (stream StringResponse);
 }
